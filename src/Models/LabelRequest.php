@@ -22,6 +22,8 @@ class LabelRequest {
 
     protected string $orderId;
 
+    protected string $expType;
+
     function setPartnerId($partnerId): self {
         $this->partnerId = $partnerId;
         return $this;
@@ -107,11 +109,28 @@ class LabelRequest {
         return $this->kuaidicom;
     }
 
+    /**
+     * @param string $expType
+     */
+    public function setExpType(string $expType): void
+    {
+        $this->expType = $expType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExpType(): string
+    {
+        return $this->expType;
+    }
+
     public function toArray() {
         $array = [
             'partnerId' => $this->partnerId,
             'kuaidicom' => $this->kuaidicom,
             'printType' => $this->printType,
+            'expType' => $this->expType,
             'count' => $this->count,
             'recMan' => $this->recMan->toArray(),
             'sendMan' => $this->sendMan->toArray()
