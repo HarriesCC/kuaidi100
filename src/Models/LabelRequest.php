@@ -112,9 +112,10 @@ class LabelRequest {
     /**
      * @param string $expType
      */
-    public function setExpType(string $expType): void
+    public function setExpType(string $expType): self
     {
         $this->expType = $expType;
+        return $this;
     }
 
     /**
