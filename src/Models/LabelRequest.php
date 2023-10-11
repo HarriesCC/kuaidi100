@@ -24,6 +24,8 @@ class LabelRequest {
 
     protected string $expType;
 
+    protected string $payType;
+
     function setPartnerId($partnerId): self {
         $this->partnerId = $partnerId;
         return $this;
@@ -126,12 +128,27 @@ class LabelRequest {
         return $this->expType;
     }
 
+    public function getPayType(): string
+    {
+        return $this->payType;
+    }
+
+    /**
+     * @param string $payType
+     */
+    public function setPayType(string $payType): self
+    {
+        $this->payType = $payType;
+        return $this;
+    }
+
     public function toArray() {
         $array = [
             'partnerId' => $this->partnerId,
             'kuaidicom' => $this->kuaidicom,
             'printType' => $this->printType,
             'expType' => $this->expType,
+            'payType' => $this->payType,
             'count' => $this->count,
             'recMan' => $this->recMan->toArray(),
             'sendMan' => $this->sendMan->toArray()
