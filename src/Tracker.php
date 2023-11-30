@@ -38,10 +38,6 @@ class Tracker extends Base
     {
         $url = 'https://poll.kuaidi100.com/poll/query.do';
 
-        if ($proxy == true) {
-            $url = 'https://poll.kuaidi100.com/poll/query.do';
-        }
-
         if (empty($this->options['customer'])) {
             throw new InvalidArgumentException('customer不能为空');
         }
@@ -69,40 +65,9 @@ class Tracker extends Base
         ];
 
         try {
-            $this->setGuzzleOptions(['timeout'=>5]);
+            $this->setGuzzleOptions(['timeout'=>10]);
             $response = $this->getHttpClient()->request('POST', $url, [
                 'form_params' => $query,
-            ])->getBody()->getContents();
-            return $response;
-        } catch (Exception $e) {
-            print_r($e);
-            throw new HttpException($e->getMessage(), $e->getCode(), $e);
-        }
-    }
-
-    /**
-     * 只能判断接口查询，查询结果不准，不建议使用
-     * @param string $num
-     * @return string
-     * @throws HttpException
-     * @throws InvalidArgumentException
-     */
-    public function getAutoTrack(string $num)
-    {
-        $url = 'http://www.kuaidi100.com/autonumber/auto';
-
-        if (empty($num)) {
-            throw new InvalidArgumentException('快递单号不能为空');
-        }
-
-        $query = [
-            'num' => $num,
-            'key' => $this->options['key']
-        ];
-
-        try {
-            $response = $this->getHttpClient()->get($url, [
-                'query' => $query,
             ])->getBody()->getContents();
             return $response;
         } catch (Exception $e) {
