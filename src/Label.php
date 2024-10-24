@@ -104,7 +104,7 @@ class Label extends Base
         $this->sign = $sign = strtoupper(md5(json_encode($param).$t.$this->key.$this->options['secret']));
 
         $params = [
-            'method' => 'cancel',
+            'method' => 'interceptOrder',
             'key' => $this->options['key'],
             'sign' => $sign,
             't' => $t,
