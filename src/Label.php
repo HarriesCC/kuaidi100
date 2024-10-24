@@ -6,6 +6,8 @@ namespace HarriesCC\Kuaidi100;
 use GuzzleHttp\Exception\GuzzleException;
 use HarriesCC\Kuaidi100\Exceptions\HttpException;
 use HarriesCC\Kuaidi100\Exceptions\InvalidArgumentException;
+use HarriesCC\Kuaidi100\Models\LabelCancelRequest;
+use HarriesCC\Kuaidi100\Models\LabelInterceptRequest;
 use HarriesCC\Kuaidi100\Models\LabelRequest;
 
 /**
@@ -38,13 +40,6 @@ class Label extends Base
     public function createOrder(LabelRequest $request)
     {
         $url = $this->endpoint.$this->path;
-//        if (empty($param)) {
-//            throw new InvalidArgumentException('param参数不能为空');
-//        }
-//
-//        if (empty($this->options['secret'])) {
-//            throw new InvalidArgumentException('secret不能为空');
-//        }
 
         $param = $request->toArray();
 
@@ -70,19 +65,46 @@ class Label extends Base
         }
     }
 
-    public function printTask($taskId) {
+    public function cancel(LabelCancelRequest $request)
+    {
         $url = $this->endpoint.$this->path;
 
-        $t = time();
+        $param = $request->toArray();
 
-        $param = [
-            'taskId' => $taskId
-        ];
+        $t = time();
 
         $this->sign = $sign = strtoupper(md5(json_encode($param).$t.$this->key.$this->options['secret']));
 
         $params = [
-            'method' => 'order',
+            'method' => 'cancel',
+            'key' => $this->options['key'],
+            'sign' => $sign,
+            't' => $t,
+            'param' => json_encode($param)
+        ];
+
+        try {
+            $response = $this->getHttpClient()->request('POST', $url, [
+                'form_params' => $params,
+            ])->getBody()->getContents();
+            return $response;
+        } catch (\Exception $e) {
+            throw new HttpException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    public function interceptOrder(LabelInterceptRequest $request)
+    {
+        $url = $this->endpoint.$this->path;
+
+        $param = $request->toArray();
+
+        $t = time();
+
+        $this->sign = $sign = strtoupper(md5(json_encode($param).$t.$this->key.$this->options['secret']));
+
+        $params = [
+            'method' => 'cancel',
             'key' => $this->options['key'],
             'sign' => $sign,
             't' => $t,
