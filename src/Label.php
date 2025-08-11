@@ -136,7 +136,7 @@ class Label extends Base
         $param = [
             'taskId' => $taskId,
         ];
-        
+
         if ($printer_id) {
             $param['siid'] = $printer_id;
         }
@@ -146,7 +146,7 @@ class Label extends Base
         $this->sign = $sign = strtoupper(md5(json_encode($param) . $t . $this->key . $this->options['secret']));
 
         $params = [
-            'method' => 'order',
+            'method' => 'printOld',
             'key' => $this->options['key'],
             'sign' => $sign,
             't' => $t,
