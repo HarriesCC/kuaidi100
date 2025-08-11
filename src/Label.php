@@ -39,13 +39,13 @@ class Label extends Base
      */
     public function createOrder(LabelRequest $request)
     {
-        $url = $this->endpoint.$this->path;
+        $url = $this->endpoint . $this->path;
 
         $param = $request->toArray();
 
         $t = time();
 
-        $this->sign = $sign = strtoupper(md5(json_encode($param).$t.$this->key.$this->options['secret']));
+        $this->sign = $sign = strtoupper(md5(json_encode($param) . $t . $this->key . $this->options['secret']));
 
         $params = [
             'method' => 'order',
@@ -67,13 +67,13 @@ class Label extends Base
 
     public function cancel(LabelCancelRequest $request)
     {
-        $url = $this->endpoint.$this->path;
+        $url = $this->endpoint . $this->path;
 
         $param = $request->toArray();
 
         $t = time();
 
-        $this->sign = $sign = strtoupper(md5(json_encode($param).$t.$this->key.$this->options['secret']));
+        $this->sign = $sign = strtoupper(md5(json_encode($param) . $t . $this->key . $this->options['secret']));
 
         $params = [
             'method' => 'cancel',
@@ -95,16 +95,58 @@ class Label extends Base
 
     public function interceptOrder(LabelInterceptRequest $request)
     {
-        $url = $this->endpoint.$this->path;
+        $url = $this->endpoint . $this->path;
 
         $param = $request->toArray();
 
         $t = time();
 
-        $this->sign = $sign = strtoupper(md5(json_encode($param).$t.$this->key.$this->options['secret']));
+        $this->sign = $sign = strtoupper(md5(json_encode($param) . $t . $this->key . $this->options['secret']));
 
         $params = [
             'method' => 'interceptOrder',
+            'key' => $this->options['key'],
+            'sign' => $sign,
+            't' => $t,
+            'param' => json_encode($param)
+        ];
+
+        try {
+            $response = $this->getHttpClient()->request('POST', $url, [
+                'form_params' => $params,
+            ])->getBody()->getContents();
+            return $response;
+        } catch (\Exception $e) {
+            throw new HttpException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * 电子面单复打
+     * @param string $taskId
+     * @return string
+     * @throws HttpException
+     * @throws InvalidArgumentException
+     * @throws GuzzleException
+     */
+    public function print($taskId, $printer_id = null)
+    {
+        $url = $this->endpoint . $this->path;
+
+        $param = [
+            'taskId' => $taskId,
+        ];
+        
+        if ($printer_id) {
+            $param['siid'] = $printer_id;
+        }
+
+        $t = time();
+
+        $this->sign = $sign = strtoupper(md5(json_encode($param) . $t . $this->key . $this->options['secret']));
+
+        $params = [
+            'method' => 'order',
             'key' => $this->options['key'],
             'sign' => $sign,
             't' => $t,
